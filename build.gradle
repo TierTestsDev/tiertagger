@@ -1,0 +1,76 @@
+plugins {
+    id "architectury-plugin" version "3.4-SNAPSHOT"
+    id "dev.architectury.loom" version "1.7-SNAPSHOT" apply false
+}
+
+architectury {
+    minecraft = rootProject.minecraft_version
+}
+
+subprojects {
+    apply plugin: "dev.architectury.loom"
+
+    loom {
+        silentMojangMappingsLicense()
+    }
+
+    dependencies {
+        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+        mappings loom.officialMojangMappings()
+    }
+
+}
+
+allprojects {
+    apply plugin: "java"
+    apply plugin: "architectury-plugin"
+    apply plugin: "maven-publish"
+
+    base {
+        archivesName = rootProject.archives_base_name
+    }
+
+    version = rootProject.mod_version
+    group = rootProject.maven_group
+
+    repositories {
+        mavenCentral()
+        maven { url "https://maven.architectury.dev/" }
+        maven { url "https://maven.neoforged.net/releases/" }
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = "UTF-8"
+        options.release = 21
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    tasks.withType(Jar).configureEach {
+        if (name == 'sourcesJar') enabled = false
+    }
+}
+
+tasks.register("collectJars") {
+    dependsOn subprojects.collect { it.tasks.named("build") }
+    doLast {
+        def outDir = file("${rootDir}/out")
+        outDir.mkdirs()
+        // Clean stale v8 JARs
+        outDir.listFiles()?.findAll { it.name.contains("1.21-1.21.8") }?.each { it.delete() }
+        subprojects.each { sub ->
+            if (sub.name == "common") return
+            sub.fileTree("${sub.buildDir}/libs").matching {
+                include "*-${mod_version}.jar"
+                exclude "*-dev-shadow*"
+                exclude "*-sources*"
+            }.each { jar ->
+                def dest = new File(outDir, "tiertagger-${sub.name}-1.21-1.21.8-${mod_version}.jar")
+                jar.withInputStream { is -> dest.bytes = is.bytes }
+            }
+        }
+    }
+}
