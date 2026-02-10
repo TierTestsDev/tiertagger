@@ -1,6 +1,6 @@
 # Tier Tagger
 
-A client-side Minecraft mod that displays player tier rankings from multiple tier list APIs directly in-game — above player heads and in the tab list.
+A client-side Minecraft mod (Fabric/Quilt) that displays player tier rankings from multiple tier list APIs directly in-game — above player heads and in the tab list.
 
 ## Features
 
@@ -17,14 +17,10 @@ A client-side Minecraft mod that displays player tier rankings from multiple tie
 ## Project Structure
 
 ### 1.21–1.21.8 (root)
-- **common/** — shared code (API clients, config, data models, HUD, mixins, screens, utilities)
-- **fabric/** — Fabric platform module
-- **neoforge/** — NeoForge platform module
+- **src/** — all source code, resources, mixins
 
-### 1.21.9–1.21.11 (v11/)
-- **v11/common/** — shared code adapted for 1.21.9+ API changes
-- **v11/fabric/** — Fabric platform module
-- **v11/neoforge/** — NeoForge platform module
+### 1.21.9–1.21.11 (mc-1.21.9/)
+- **mc-1.21.9/src/** — adapted for 1.21.9+ API changes
 
 ## Building
 
@@ -33,7 +29,7 @@ A client-side Minecraft mod that displays player tier rankings from multiple tie
 ./gradlew collectJars
 
 # Build 1.21.9–1.21.11
-cd v11
+cd mc-1.21.9
 ./gradlew collectJars
 ```
 

@@ -6,4 +6,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'tiertagger'
+rootProject.name = 'tiertagger-mc-1.21.9'

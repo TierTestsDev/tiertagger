@@ -8,7 +8,7 @@ version = project.mod_version
 group = project.maven_group
 
 base {
-    archivesName = "tiertagger-1.21-1.21.8"
+    archivesName = "tiertagger-1.21.9-1.21.11"
 }
 
 repositories {
@@ -20,6 +20,9 @@ dependencies {
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+    compileOnly "org.projectlombok:lombok:1.18.38"
+    annotationProcessor "org.projectlombok:lombok:1.18.38"
 
     include(implementation("org.yaml:snakeyaml:2.2"))
     implementation "com.google.code.gson:gson:2.10.1"
@@ -47,15 +50,15 @@ java {
 tasks.register("collectJars") {
     dependsOn tasks.named("build")
     doLast {
-        def outDir = file("${rootDir}/out")
+        def outDir = file("${rootDir}/../out")
         outDir.mkdirs()
-        outDir.listFiles()?.findAll { it.name.contains("1.21-1.21.8") }?.each { it.delete() }
+        outDir.listFiles()?.findAll { it.name.contains("1.21.9-1.21.11") }?.each { it.delete() }
         fileTree("${buildDir}/libs").matching {
             include "*-${mod_version}.jar"
             exclude "*-dev*"
             exclude "*-sources*"
         }.each { jar ->
-            def dest = new File(outDir, "tiertagger-1.21-1.21.8-${mod_version}.jar")
+            def dest = new File(outDir, "tiertagger-1.21.9-1.21.11-${mod_version}.jar")
             jar.withInputStream { is -> dest.bytes = is.bytes }
         }
     }
